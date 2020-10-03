@@ -1,0 +1,87 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="PredicateGroupTypeEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="none"/>
+      <xs:enumeration value="and"/>
+      <xs:enumeration value="or"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PredicateTypeEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="contains"/>
+      <xs:enumeration value="ex_eq"/>
+      <xs:enumeration value="n_contains"/>
+      <xs:enumeration value="n_ex_eq"/>
+      <xs:enumeration value="n_regex_match"/>
+      <xs:enumeration value="regex_match"/>
+    </xs:restrictions>
+  </xs:simpleType>
+  <xs:simpleType name="PredicateTargetEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="files"/>
+      <xs:enumeration value="folders"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ActionTargetEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="files_in_folders_with_matched_files"/>
+      <xs:enumeration value="files_in_folders_with_unmatched_files"/>
+      <xs:enumeration value="files_in_matched_folders"/>
+      <xs:enumeration value="files_in_unmatched_folders"/>
+      <xs:enumeration value="matched_files"/>
+      <xs:enumeration value="matched_folders"/>
+      <xs:enumeration value="unmatched_files"/>
+      <xs:enumeration value="unmatched_folders"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="PropertyEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="contents"/>
+      <xs:enumeration value="extension"/>
+      <xs:enumeration value="name"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:element name="rules" minOccurs="1" maxOccurs="1">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="predicates" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="predicateGroup" minOccurs="1" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="predicate" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="type" type="PredicateTypeEnum" use="required"/>
+                              <xs:attribute name="target" type="PredicateTargetEnum" use="required"/>
+                              <xs:attribute name="property" type="PropertyEnum" use="required"/>
+                            </xs:complexType>
+                          </xs:element><!-- predicate -->
+                        </xs:sequence>
+                        <xs:attribute name="type" type="PredicateGroupTypeEnum" use="required"/>
+                      </xs:complexType>
+                    </xs:element><!-- predicateGroup -->
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element><!-- predicates -->
+              <xs:element name="actions" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:element name="action" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                      <xs:attribute name="type" type="ActionTypeEnum" use="required"/>
+                      <xs:attribute name="target" type="ActionTargetEnum" use="required"/>
+                      <xs:attribute name="property" type="PropertyEnum" use="required"/>
+                    </xs:complexType>
+                  </xs:element><!-- action -->
+                </xs:complexType>
+              </xs:element><!-- actions -->
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element><!-- rule -->
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element><!-- rules -->
+</xs:schema>

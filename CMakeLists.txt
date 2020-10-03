@@ -15,6 +15,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(ffree)
 
+find_package(XercesC REQUIRED)
+
 if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 17)
 endif()
@@ -24,6 +26,9 @@ add_executable(${PROJECT_NAME}
 )
 target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
+target_link_libraries(${PROJECT_NAME} PRIVATE
+  XercesC::XercesC
 )
 
 install(

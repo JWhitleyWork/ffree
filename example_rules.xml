@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<rules>
+  <rule>
+    <predicates>
+      <predicategroup type="none">
+        <predicate type="ex_eq" target="files" property="name">this</predicate>
+      </predicateGroup>
+    </predicates>
+    <actions>
+      <action type="rename" target="matched_file" property="name">that</action>
+    </actions>
+  </rule>
+</rules>
