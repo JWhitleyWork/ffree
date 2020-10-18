@@ -36,6 +36,7 @@ int32_t main(int32_t argc, char ** argv)
 
   bool print_help = false;
   LogLevel logging_level;
+  auto logger = Logger(LogLevel::DEBUG);
 
   try {
     const auto result = opts.parse(argc, argv);
@@ -56,7 +57,7 @@ int32_t main(int32_t argc, char ** argv)
     } else if (log_level_string == "none") {
       logging_level = LogLevel::NONE;
     } else {
-      std::cout << "\nValid logging levels are none, error, warn (default), info, and debug.\n";
+      LOG_ERROR(logger, "Valid logging levels are none, error, warn (default), info, and debug.");
       print_help = true;
     }
 
@@ -64,7 +65,7 @@ int32_t main(int32_t argc, char ** argv)
       print_help = true;
     }
   } catch (cxxopts::OptionParseException ex) {
-    std::cerr << "\nError parsing options: " << ex.what() << "\n\n";
+    LOG_ERROR(logger, "Error parsing options: " << ex.what() << "\n");
     std::cout << opts.help() << std::endl;
     return -1;
   }
@@ -74,6 +75,8 @@ int32_t main(int32_t argc, char ** argv)
     std::cout << opts.help() << std::endl;
     return 0;
   }
+
+  logger.set_level(logging_level);
 
   return 0;
 }
