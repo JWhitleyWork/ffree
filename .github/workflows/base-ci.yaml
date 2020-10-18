@@ -20,9 +20,14 @@ jobs:
         run: |
           xmllint --noout --schema schema.xsd example_rules.xml
 
-      - name: Build
+      - name: Build and Install
         run: |
           mkdir build && cd build
           cmake ..
           make
           make install
+
+      - name: Uninstall
+        run: |
+          cd build
+          make uninstall
