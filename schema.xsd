@@ -14,12 +14,20 @@
       <xs:enumeration value="n_ex_eq"/>
       <xs:enumeration value="n_regex_match"/>
       <xs:enumeration value="regex_match"/>
-    </xs:restrictions>
+    </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="PredicateTargetEnum">
     <xs:restriction base="xs:token">
       <xs:enumeration value="files"/>
       <xs:enumeration value="folders"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ActionTypeEnum">
+    <xs:restriction base="xs:token">
+      <xs:enumeration value="delete"/>
+      <xs:enumeration value="edit_content"/>
+      <xs:enumeration value="move"/>
+      <xs:enumeration value="rename"/>
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="ActionTargetEnum">
@@ -41,23 +49,27 @@
       <xs:enumeration value="name"/>
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="rules" minOccurs="1" maxOccurs="1">
+  <xs:element name="rules">
     <xs:complexType>
-      <xs:sequence>
-        <xs:element name="rule" minOccurs="1" maxOccurs="unbounded">
+      <xs:sequence minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="rule">
           <xs:complexType>
-            <xs:sequence>
-              <xs:element name="predicates" minOccurs="1" maxOccurs="1">
+            <xs:sequence minOccurs="1" maxOccurs="1">
+              <xs:element name="predicates">
                 <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="predicateGroup" minOccurs="1" maxOccurs="unbounded">
+                  <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="predicateGroup">
                       <xs:complexType>
-                        <xs:sequence>
-                          <xs:element name="predicate" type="xs:string" minOccurs="1" maxOccurs="unbounded">
+                        <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                          <xs:element name="predicate">
                             <xs:complexType>
-                              <xs:attribute name="type" type="PredicateTypeEnum" use="required"/>
-                              <xs:attribute name="target" type="PredicateTargetEnum" use="required"/>
-                              <xs:attribute name="property" type="PropertyEnum" use="required"/>
+                              <xs:simpleContent>
+                                <xs:extension base="xs:string">
+                                  <xs:attribute name="type" type="PredicateTypeEnum" use="required"/>
+                                  <xs:attribute name="target" type="PredicateTargetEnum" use="required"/>
+                                  <xs:attribute name="property" type="PropertyEnum" use="required"/>
+                                </xs:extension>
+                              </xs:simpleContent>
                             </xs:complexType>
                           </xs:element><!-- predicate -->
                         </xs:sequence>
@@ -67,15 +79,21 @@
                   </xs:sequence>
                 </xs:complexType>
               </xs:element><!-- predicates -->
-              <xs:element name="actions" minOccurs="1" maxOccurs="1">
+              <xs:element name="actions">
                 <xs:complexType>
-                  <xs:element name="action" minOccurs="1" maxOccurs="unbounded">
-                    <xs:complexType>
-                      <xs:attribute name="type" type="ActionTypeEnum" use="required"/>
-                      <xs:attribute name="target" type="ActionTargetEnum" use="required"/>
-                      <xs:attribute name="property" type="PropertyEnum" use="required"/>
-                    </xs:complexType>
-                  </xs:element><!-- action -->
+                  <xs:sequence minOccurs="1" maxOccurs="unbounded">
+                    <xs:element name="action">
+                      <xs:complexType>
+                        <xs:simpleContent>
+                          <xs:extension base="xs:string">
+                            <xs:attribute name="type" type="ActionTypeEnum" use="required"/>
+                            <xs:attribute name="target" type="ActionTargetEnum" use="required"/>
+                            <xs:attribute name="property" type="PropertyEnum" use="required"/>
+                          </xs:extension>
+                        </xs:simpleContent>
+                      </xs:complexType>
+                    </xs:element><!-- action -->
+                  </xs:sequence>
                 </xs:complexType>
               </xs:element><!-- actions -->
             </xs:sequence>
