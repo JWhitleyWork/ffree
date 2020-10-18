@@ -44,11 +44,11 @@ public:
   Logger(const LogLevel & min_level)
   : min_level_(min_level),
     level_strings_{
-      std::make_pair(LogLevel::NONE, "NONE   "),
-      std::make_pair(LogLevel::ERROR, "ERROR  "),
-      std::make_pair(LogLevel::WARN, "WARN   "),
-      std::make_pair(LogLevel::INFO, "INFO   "),
-      std::make_pair(LogLevel::DEBUG, "DEBUG  ")
+      std::make_pair(LogLevel::NONE, "NON"),
+      std::make_pair(LogLevel::ERROR, "ERR"),
+      std::make_pair(LogLevel::WARN, "WRN"),
+      std::make_pair(LogLevel::INFO, "NFO"),
+      std::make_pair(LogLevel::DEBUG, "DBG")
     },
     level_colors_{
       std::make_pair(LogLevel::ERROR, "\033[1;31m"),
@@ -107,9 +107,11 @@ public:
 private:
   static inline void rtrim(std::string & s)
   {
-    s.erase(std::find_if(s.rbegin(), s.rend(), [](unsigned char ch) {
-      return !std::isspace(ch);
-    }).base(), s.end());
+    s.erase(
+      std::find_if(
+        s.rbegin(), s.rend(), [](unsigned char ch) {
+          return !std::isspace(ch);
+        }).base(), s.end());
   }
 
   LogLevel min_level_;
@@ -122,40 +124,44 @@ private:
 
 #define LOG_ERROR(logger, stream_arg) \
   static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>::type, \
+    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+    type, \
     typename ::ffree::logging::Logger>::value, \
     "First argument to logging macros must be an ffree::logging::Logger"); \
-\
+ \
   std::stringstream ss; \
   ss << stream_arg; \
   logger.log(LogLevel::ERROR, ss);
 
 #define LOG_WARN(logger, stream_arg) \
   static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>::type, \
+    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+    type, \
     typename ::ffree::logging::Logger>::value, \
     "First argument to logging macros must be an ffree::logging::Logger"); \
-\
+ \
   std::stringstream ss; \
   ss << stream_arg; \
   logger.log(LogLevel::WARN, ss);
 
 #define LOG_INFO(logger, stream_arg) \
   static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>::type, \
+    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+    type, \
     typename ::ffree::logging::Logger>::value, \
     "First argument to logging macros must be an ffree::logging::Logger"); \
-\
+ \
   std::stringstream ss; \
   ss << stream_arg; \
   logger.log(LogLevel::INFO, ss);
 
 #define LOG_DEBUG(logger, stream_arg) \
   static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>::type, \
+    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+    type, \
     typename ::ffree::logging::Logger>::value, \
     "First argument to logging macros must be an ffree::logging::Logger"); \
-\
+ \
   std::stringstream ss; \
   ss << stream_arg; \
   logger.log(LogLevel::DEBUG, ss);
