@@ -1,0 +1,26 @@
+name: Base CI Script
+
+on:
+  - push
+
+jobs:
+  xml-validate:
+    runs-on: ubuntu-latest
+    container:
+      image: alpine:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Schema Validation
+        run: |
+          apk add -U libxml2-utils
+          xmllint --noout --schema schema.xsd example_rules.xml
+
+      - name: Build Validation
+        run: |
+          apk add -U g++ libstdc++ cmake make xerces-c-dev
+          mkdir build && cd build
+          cmake ..
+          make
+          make install
