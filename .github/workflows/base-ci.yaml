@@ -12,14 +12,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Prerequisites Installation
+        run: |
+          apk add -U libxml2-utils g++ libstdc++ cmake make xerces-c-dev
+
       - name: Schema Validation
         run: |
-          apk add -U libxml2-utils
           xmllint --noout --schema schema.xsd example_rules.xml
 
-      - name: Build Validation
+      - name: Build
         run: |
-          apk add -U g++ libstdc++ cmake make xerces-c-dev
           mkdir build && cd build
           cmake ..
           make
