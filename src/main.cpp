@@ -17,6 +17,7 @@
 /// \file
 /// \brief This file is the main entrypoint for the ffree command-line application
 
+#include <cstdlib>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -26,24 +27,49 @@
 
 using namespace ffree::logging;
 
+void print_help(cxxopts::Options & opts, uint32_t ret_code)
+{
+  std::cout << "\n";
+  std::cout << opts.help() << std::endl;
+  exit(ret_code);
+}
+
 int32_t main(int32_t argc, char ** argv)
 {
-  cxxopts::Options opts("ffree", "The Files and Folders Rules Evaluation Engine");
+  cxxopts::Options opts(argv[0], "The Files and Folders Rules Evaluation Engine");
+  opts.positional_help("<rules file path> <base folder path>");
+
   opts.add_options()
     ("h,help", "Print help and exit")
     ("l,log-level", "Logging level", cxxopts::value<std::string>()->default_value("warn"))
-    ("r,rules", "Rules XML file", cxxopts::value<std::string>());
+    ("r,rules", "Rules XML file", cxxopts::value<std::string>())
+    ("p,path", "Path to folder where rules should be executed", cxxopts::value<std::string>());
 
-  bool print_help = false;
-  LogLevel logging_level;
+  opts.parse_positional({"rules", "path"});
+
   auto logger = Logger(LogLevel::DEBUG);
 
-  try {
-    const auto result = opts.parse(argc, argv);
+  LogLevel logging_level;
+  std::string rules_path;
+  std::string folder_path;
 
-    // Handle arguments
-    std::string log_level_string = (result.count("l") > 0) ?
-      result["l"].as<std::string>() : result["log-level"].as<std::string>();
+  try {
+    const auto parse_result = opts.parse(argc, argv);
+
+    // Handle parse_result
+    if (parse_result.count("help") > 0) {
+      print_help(opts, 0);
+    }
+
+    if (parse_result.count("rules") > 0 && parse_result.count("path") > 0) {
+      rules_path = parse_result["rules"].as<std::string>();
+      folder_path = parse_result["path"].as<std::string>();
+    } else {
+      LOG_ERROR(logger, "Rules XML file and folder path are required parse_result.");
+      print_help(opts, 1);
+    }
+
+    std::string log_level_string = parse_result["log-level"].as<std::string>();
 
     if (log_level_string == "debug") {
       logging_level = LogLevel::DEBUG;
@@ -58,22 +84,11 @@ int32_t main(int32_t argc, char ** argv)
       logging_level = LogLevel::NONE;
     } else {
       LOG_ERROR(logger, "Valid logging levels are none, error, warn (default), info, and debug.");
-      print_help = true;
-    }
-
-    if (result.count("help") > 0 || result.count("h") > 0) {
-      print_help = true;
+      print_help(opts, 1);
     }
   } catch (cxxopts::OptionParseException ex) {
-    LOG_ERROR(logger, "Error parsing options: " << ex.what() << "\n");
-    std::cout << opts.help() << std::endl;
-    return -1;
-  }
-
-  if (print_help) {
-    std::cout << "\n";
-    std::cout << opts.help() << std::endl;
-    return 0;
+    LOG_ERROR(logger, "Error parsing options: " << ex.what());
+    print_help(opts, 1);
   }
 
   logger.set_level(logging_level);
