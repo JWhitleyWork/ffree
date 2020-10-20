@@ -18,6 +18,7 @@
 /// \brief This file is the main entrypoint for the ffree command-line application
 
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -26,6 +27,7 @@
 #include <logging.hpp>
 
 using namespace ffree::logging;
+namespace fs = std::filesystem;
 
 void print_help(cxxopts::Options & opts, uint32_t ret_code)
 {
@@ -50,8 +52,8 @@ int32_t main(int32_t argc, char ** argv)
   auto logger = Logger(LogLevel::DEBUG);
 
   LogLevel logging_level;
-  std::string rules_path;
-  std::string folder_path;
+  std::string rules_path_string;
+  std::string folder_path_string;
 
   try {
     const auto parse_result = opts.parse(argc, argv);
@@ -62,8 +64,8 @@ int32_t main(int32_t argc, char ** argv)
     }
 
     if (parse_result.count("rules") > 0 && parse_result.count("path") > 0) {
-      rules_path = parse_result["rules"].as<std::string>();
-      folder_path = parse_result["path"].as<std::string>();
+      rules_path_string = parse_result["rules"].as<std::string>();
+      folder_path_string = parse_result["path"].as<std::string>();
     } else {
       LOG_ERROR(logger, "Rules XML file and folder path are required parse_result.");
       print_help(opts, 1);
@@ -92,6 +94,28 @@ int32_t main(int32_t argc, char ** argv)
   }
 
   logger.set_level(logging_level);
+
+  auto rules_path = fs::path(rules_path_string);
+  auto folder_path = fs::path(folder_path_string);
+
+  // Normalize paths
+  try {
+    LOG_DEBUG(logger, "Rules file path provided as " << rules_path.string());
+    rules_path = fs::canonical(rules_path);
+    LOG_DEBUG(logger, "Rules file path parsed as " << rules_path.string());
+  } catch (fs::filesystem_error ex) {
+    LOG_ERROR(logger, "Rules file path does not exist or is not accessible.");
+    exit(3);
+  }
+
+  try {
+    LOG_DEBUG(logger, "Base folder path provided as " << folder_path.string());
+    folder_path = fs::canonical(folder_path);
+    LOG_DEBUG(logger, "Base folder path parsed as " << folder_path.string());
+  } catch (fs::filesystem_error ex) {
+    LOG_ERROR(logger, "Base folder path does not exist or is not accessible.");
+    exit(4);
+  }
 
   return 0;
 }
