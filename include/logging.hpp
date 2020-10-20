@@ -123,45 +123,53 @@ private:
 }  // namespace ffree
 
 #define LOG_ERROR(logger, stream_arg) \
-  static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
-    type, \
-    typename ::ffree::logging::Logger>::value, \
-    "First argument to logging macros must be an ffree::logging::Logger"); \
+  do { \
+    static_assert( \
+      ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+      type, \
+      typename ::ffree::logging::Logger>::value, \
+      "First argument to logging macros must be an ffree::logging::Logger"); \
  \
-  std::stringstream ss; \
-  ss << stream_arg; \
-  logger.log(LogLevel::ERROR, ss);
+    std::stringstream ss; \
+    ss << stream_arg; \
+    logger.log(LogLevel::ERROR, ss); \
+  } while (0)
 
 #define LOG_WARN(logger, stream_arg) \
-  static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
-    type, \
-    typename ::ffree::logging::Logger>::value, \
-    "First argument to logging macros must be an ffree::logging::Logger"); \
+  do { \
+    static_assert( \
+      ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+      type, \
+      typename ::ffree::logging::Logger>::value, \
+      "First argument to logging macros must be an ffree::logging::Logger"); \
  \
-  std::stringstream ss; \
-  ss << stream_arg; \
-  logger.log(LogLevel::WARN, ss);
+    std::stringstream ss; \
+    ss << stream_arg; \
+    logger.log(LogLevel::WARN, ss); \
+  } while (0)
 
 #define LOG_INFO(logger, stream_arg) \
-  static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
-    type, \
-    typename ::ffree::logging::Logger>::value, \
-    "First argument to logging macros must be an ffree::logging::Logger"); \
+  do { \
+    static_assert( \
+      ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+      type, \
+      typename ::ffree::logging::Logger>::value, \
+      "First argument to logging macros must be an ffree::logging::Logger"); \
  \
-  std::stringstream ss; \
-  ss << stream_arg; \
-  logger.log(LogLevel::INFO, ss);
+    std::stringstream ss; \
+    ss << stream_arg; \
+    logger.log(LogLevel::INFO, ss); \
+  } while (0)
 
 #define LOG_DEBUG(logger, stream_arg) \
-  static_assert( \
-    ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
-    type, \
-    typename ::ffree::logging::Logger>::value, \
-    "First argument to logging macros must be an ffree::logging::Logger"); \
+  do { \
+    static_assert( \
+      ::std::is_same<typename std::remove_cv<typename std::remove_reference<decltype(logger)>::type>:: \
+      type, \
+      typename ::ffree::logging::Logger>::value, \
+      "First argument to logging macros must be an ffree::logging::Logger"); \
  \
-  std::stringstream ss; \
-  ss << stream_arg; \
-  logger.log(LogLevel::DEBUG, ss);
+    std::stringstream ss; \
+    ss << stream_arg; \
+    logger.log(LogLevel::DEBUG, ss); \
+  } while (0)
